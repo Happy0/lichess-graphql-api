@@ -9,5 +9,5 @@ import Data.Text as T
 main :: IO ()
 main =
   do
-   testResult <- interpretAnonymousQuery @Query queryHandler "query { user (id: happy0) { id } }"
+   testResult <- interpretAnonymousQuery @Query queryHandler "query { user (id: \"happy0\") { id } }"
    putStrLn $ show $ encode testResult
