@@ -7,7 +7,7 @@ module Lichess.GraphQL.Model.Game (Game, GameConnection, GameEdge) where
 
   type GameEdge = Object "GameEdge" '[] '[Field "cursor" Text, Field "node" Game ]
 
-  type GameConnection = Object "GameConnection" '[] '[Field "nodes" [Game], Field "edges" [GameEdge] ]
+  type GameConnection = Object "GameConnection" '[] '[Field "nodes" (List Game), Field "edges" (List GameEdge) ]
 
   -- Todo: there are more fields, obviously :P
   type Game = Object "Game" '[] '[Field "id" Text, Field "rated" Bool ]

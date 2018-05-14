@@ -7,9 +7,12 @@ module Lichess.GraphQL.Lib
   import Data.Text
   import GraphQL.Resolver (Handler, (:<>)(..))
   import Lichess.GraphQL.Api (Query, User, GameConnection)
+  import GraphQL.API (Argument, (:>), Field, List, Object, Union)
 
-  gameConnectionHandler :: Int -> Int -> Text -> Handler IO [GameConnection]
-  gameConnectionHandler first _ after = undefined
+  import Data.Int
+
+  gameConnectionHandler :: Int32 -> Int32 -> Text -> Handler IO (List GameConnection)
+  gameConnectionHandler first _ after = pure undefined
 
   userHandler :: Text -> Handler IO User
   userHandler userId = pure ( pure userId :<> gameConnectionHandler )
