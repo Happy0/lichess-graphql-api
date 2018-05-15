@@ -1,4 +1,7 @@
 {-# LANGUAGE DataKinds #-}
+{-# LANGUAGE OverloadedStrings #-}
+
+
 module Lichess.GraphQL.Lib
     ( queryHandler,
       Query
@@ -12,7 +15,11 @@ module Lichess.GraphQL.Lib
   import Data.Int
 
   gameConnectionHandler :: Int32 -> Int32 -> Text -> Handler IO (List GameConnection)
-  gameConnectionHandler first _ after = pure undefined
+  gameConnectionHandler first last after = pure [gameConnections]
+    where
+      gameConnections = pure ( pure [game] :<> pure [])
+
+      game = pure ( pure "yoyo" :<> pure True)
 
   userHandler :: Text -> Handler IO User
   userHandler userId = pure ( pure userId :<> gameConnectionHandler )
