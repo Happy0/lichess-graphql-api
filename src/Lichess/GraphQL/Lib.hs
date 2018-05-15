@@ -22,7 +22,7 @@ module Lichess.GraphQL.Lib
       game = pure ( pure "yoyo" :<> pure True)
 
   userHandler :: Text -> Handler IO User
-  userHandler userId = pure ( pure userId :<> gameConnectionHandler )
+  userHandler userId = pure ( pure userId :<> pure True :<> gameConnectionHandler )
 
   queryHandler :: Handler IO Query
   queryHandler = pure userHandler

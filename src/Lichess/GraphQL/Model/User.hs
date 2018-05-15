@@ -11,5 +11,6 @@ module Lichess.GraphQL.Model.User (User) where
   -- Todo: there are more fields, obviously :P
   type User = Object "User" '[]
               '[ Field "id" Text,
+                 Field "online" Bool,
                  Argument "first" Int32 :> Argument "last" Int32 :> Argument "after" Text :> Field "games" (List GameConnection)
                ]
