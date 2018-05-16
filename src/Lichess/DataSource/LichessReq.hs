@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings, GADTs, DeriveDataTypeable, StandaloneDeriving, RecordWildCards, TypeFamilies, FlexibleInstances, MultiParamTypeClasses #-}
 
-module Lichess.DataSource.LichessReq (LichessReq, initGlobalState) where
+module Lichess.DataSource.LichessReq (LichessReq(GetUser, GetUserGames), initGlobalState) where
 
   import Lichess.DataSource.Model.LichessUser (LichessUser)
   import Lichess.DataSource.Model.LichessGame (LichessGame)
@@ -45,12 +45,9 @@ module Lichess.DataSource.LichessReq (LichessReq, initGlobalState) where
   instance DataSource u LichessReq where
     fetch = lichessFetch
 
-  initGlobalState
-    :: Int
-    -> UserAccessToken
-    -> IO (State LichessReq)
+  initGlobalState :: UserAccessToken -> IO (State LichessReq)
 
-  initGlobalState threads token = do
+  initGlobalState token = do
     manager <- newManager tlsManagerSettings
     return LichessState
       {
@@ -65,4 +62,7 @@ module Lichess.DataSource.LichessReq (LichessReq, initGlobalState) where
     -> [BlockedFetch LichessReq]
     -> PerformFetch
 
-  lichessFetch ( LichessState token httpManager ) _flags _user bfs = undefined
+  lichessFetch ( LichessState token httpManager ) _flags _user bfs = AsyncFetch $ \inner -> do
+    putStrLn (show (Prelude.length bfs))
+    inner
+    undefined
