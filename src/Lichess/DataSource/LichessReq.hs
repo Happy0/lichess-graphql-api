@@ -1,9 +1,10 @@
 {-# LANGUAGE OverloadedStrings, GADTs, DeriveDataTypeable, StandaloneDeriving, RecordWildCards, TypeFamilies, FlexibleInstances, MultiParamTypeClasses #-}
 
-module Lichess.DataSource.LichessReq (LichessReq(GetUser, GetUserGames), initGlobalState) where
+module Lichess.DataSource.LichessReq (LichessReq(GetUser, GetUserGames, GetCurrentTournaments), initGlobalState) where
 
   import Lichess.DataSource.Model.LichessUser (LichessUser)
   import Lichess.DataSource.Model.LichessGame (LichessGame)
+  import Lichess.DataSource.Model.LichessTournament (LichessTournament)
   import Data.Text
   import Data.Typeable
   import Network.HTTP.Client.TLS (tlsManagerSettings)
@@ -21,6 +22,7 @@ module Lichess.DataSource.LichessReq (LichessReq(GetUser, GetUserGames), initGlo
   data LichessReq a where
       GetUser :: UserId -> LichessReq LichessUser
       GetUserGames :: UserId -> Start -> End -> After -> LichessReq [LichessGame]
+      GetCurrentTournaments :: LichessReq [LichessTournament]
       deriving Typeable
 
   deriving instance Eq (LichessReq a)
@@ -31,6 +33,7 @@ module Lichess.DataSource.LichessReq (LichessReq(GetUser, GetUserGames), initGlo
   instance Hashable (LichessReq a) where
     hashWithSalt s (GetUser userId) = hashWithSalt s (0::Int,userId)
     hashWithSalt s (GetUserGames userId start end after) = hashWithSalt s (1::Int,userId)
+    hashWithSalt s (GetCurrentTournaments) = hashWithSalt s (2::Int)
 
   instance StateKey LichessReq where
     data State LichessReq =
@@ -64,5 +67,11 @@ module Lichess.DataSource.LichessReq (LichessReq(GetUser, GetUserGames), initGlo
 
   lichessFetch ( LichessState token httpManager ) _flags _user bfs = AsyncFetch $ \inner -> do
     putStrLn (show (Prelude.length bfs))
+    mapM_ showRequest bfs
+
     inner
     undefined
+
+    where
+      showRequest :: BlockedFetch LichessReq -> IO ()
+      showRequest (BlockedFetch req res) = putStrLn (show req)

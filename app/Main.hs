@@ -14,5 +14,5 @@ main =
   do
    lichiggidyState <- initGlobalState ""
    env <- initEnv (stateSet lichiggidyState stateEmpty) ()
-   mantis <- runHaxl env $ interpretAnonymousQuery @Query queryHandler "query { user (id: \"happy0\") { games (first: 0, last: 0, after: \"\") { nodes { id } }  } }"
+   mantis <- runHaxl env $ interpretAnonymousQuery @Query queryHandler "query { user (id: \"happy0\") { games (first: 0, last: 0, after: \"\") { nodes { id } }  }, tournaments { current(limit: 20) }     }"
    putStrLn $ show $ encode mantis

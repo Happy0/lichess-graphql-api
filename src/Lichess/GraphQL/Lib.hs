@@ -8,12 +8,12 @@ module Lichess.GraphQL.Lib
 
   import Data.Text
   import GraphQL.Resolver (Handler, (:<>)(..))
-  import Lichess.GraphQL.Api (Query, User, GameConnection, Game)
+  import Lichess.GraphQL.Api (Query, User, GameConnection, Game, Tournaments, Tournament)
   import GraphQL.API (Argument, (:>), Field, List, Object, Union)
   import Lichess.DataSource.LichessReq
   import Lichess.DataSource.Model.LichessUser
   import Lichess.DataSource.Model.LichessGame
-
+  import Lichess.DataSource.Model.LichessTournament
 
   import Data.Int
   import Haxl.Core
@@ -32,5 +32,14 @@ module Lichess.GraphQL.Lib
       toGraphModel (LichessUser userId isOnline) = pure ( pure userId :<> pure isOnline :<> gameConnsForUser)
       gameConnsForUser first end after = gameConnectionHandler userId first end after
 
+  tournamentHandler :: Handler (GenHaxl u) Tournaments
+  tournamentHandler = pure currentTournamentsHandler
+
+  currentTournamentsHandler :: Int32 -> Handler (GenHaxl u) (List Tournament)
+  currentTournamentsHandler limit = (dataFetch GetCurrentTournaments) >>= toGraphModel
+    where
+      toGraphModel tournaments = pure (fmap toTournamentModel tournaments)
+      toTournamentModel (LichessTournament tourId) = pure (pure tourId)
+
   queryHandler :: Handler (GenHaxl u) Query
-  queryHandler = pure userHandler
+  queryHandler = pure (userHandler :<> tournamentHandler)
