@@ -62,14 +62,11 @@ module Lichess.DataSource.LichessReq (LichessReq(GetUser, GetUserGames, GetCurre
     :: State LichessReq
     -> Flags
     -> u
-    -> [BlockedFetch LichessReq]
-    -> PerformFetch
+    -> PerformFetch LichessReq
 
-  lichessFetch ( LichessState token httpManager ) _flags _user bfs = AsyncFetch $ \inner -> do
+  lichessFetch ( LichessState token httpManager ) _flags _user = BackgroundFetch $ \bfs -> do
     putStrLn (show (Prelude.length bfs))
     mapM_ showRequest bfs
-
-    inner
     undefined
 
     where

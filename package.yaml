@@ -22,7 +22,7 @@ description:         Please see the README on GitHub at <https://github.com/gith
 dependencies:
 - base >= 4.7 && < 5
 - aeson == 1.2.4.0
-- haxl == 0.5.1.0
+- haxl == 2.0.0.0
 - graphql-api == 0.3.0
 - text == 1.2.3.0
 - http-conduit == 2.3.1
